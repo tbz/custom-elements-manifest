@@ -4,6 +4,10 @@ import { LitElement, property, customElement } from 'lit';
 class MyElement extends InputMixin(LitElement) {
   @property({})
   firstName = 'John';
+
+  /** @ignore */
+  @property({ attribute: 'ignored-property' })
+  ignoredProperty = 'ignored';
 }
 
 export function InputMixin(superClass) {

@@ -57,32 +57,37 @@ function handlePropertyDecorator(classNode, moduleDoc, mixinName = null) {
        */
       if (isAlsoAttribute(propertyOptions)) {
         const field = currClass.members.find(classMember => classMember.name === member.name.getText());
-        const attribute = createAttributeFromField(field);
 
         /**
-         * If an attribute name is provided
-         * @example @property({attribute:'my-foo'})
+         * Make sure property is not ignored
          */
-        const attributeName = getAttributeName(propertyOptions);
-        if(attributeName) {
-          attribute.name = attributeName;
-          field.attribute = attributeName;
-        } else {
-          field.attribute = field.name;
-        }
+        if (field) {
+          const attribute = createAttributeFromField(field);
 
-        
-        if(reflects(propertyOptions)) {
-          field.attribute = attribute.name;
-          field.reflects = true;
-        }
+          /**
+           * If an attribute name is provided
+           * @example @property({attribute:'my-foo'})
+           */
+          const attributeName = getAttributeName(propertyOptions);
+          if(attributeName) {
+            attribute.name = attributeName;
+            field.attribute = attributeName;
+          } else {
+            field.attribute = field.name;
+          }
 
-        const existingAttribute = currClass?.attributes?.find(attr => attr.name === attribute.name);
+          if(reflects(propertyOptions)) {
+            field.attribute = attribute.name;
+            field.reflects = true;
+          }
 
-        if(!existingAttribute) {
-          currClass.attributes.push(attribute);
-        } else {
-          currClass.attributes = currClass?.attributes?.map(attr => attr.name === attribute.name ? ({...attr, ...attribute}) : attr);
+          const existingAttribute = currClass?.attributes?.find(attr => attr.name === attribute.name);
+
+          if(!existingAttribute) {
+            currClass.attributes.push(attribute);
+          } else {
+            currClass.attributes = currClass?.attributes?.map(attr => attr.name === attribute.name ? ({...attr, ...attribute}) : attr);
+          }
         }
       }
     }
